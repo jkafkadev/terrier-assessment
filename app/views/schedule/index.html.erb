@@ -1,2 +1,29 @@
-<h1>Schedule#index</h1>
-<p>Find me in app/views/schedule/index.html.erb</p>
+<div style="display: grid; grid-auto-columns: 200px; grid-auto-rows: 2px; gap: 0 5px;">
+    <div style="grid-column: 1 / span 1; grid-row: 1 / span 10;">Time</div>
+    <% 0.upto(23) do |time| %>
+        <div style="grid-column: 1 / span 1; grid-row: <%= time * 60 + 10%> / span 20">
+            <%= time %>:00
+        </div>
+    <% end %>
+    <% @schedule_by_technician.each do |schedule| %>
+        <div style="grid-column: calc(1 + <%= schedule["technician"].id %>) / span 1; grid-row: 1 / span 10;">
+            <%= schedule["technician"].name %>
+        </div>
+        <% schedule["work_orders"].each do |workOrder| %>
+            <div style="border: 1px solid black;grid-column: calc(1 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= workOrder["timeInMinutes"] %>) / span <%= workOrder["duration"] %>;">
+                <%= workOrder["location"] %>
+                <%= workOrder["city"] %>
+                <%= workOrder["time"].strftime('%H:%M') %>
+                <%= workOrder["duration"] %>
+                <%= workOrder["price"] %>
+            </div>
+        <% end %>
+        <% schedule["breaks"].each do |break_slot| %>
+            <div style="border: 1px dotted red;grid-column: calc(1 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= break_slot["timeInMinutes"] %>) / span <%= break_slot["duration"] %>;">
+                Break
+                <%= break_slot["time"].strftime('%H:%M') %>
+                <%= break_slot["duration"] %>
+            </div>
+        <% end %>
+    <% end %>
+</div>
