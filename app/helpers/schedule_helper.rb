@@ -1,5 +1,5 @@
 module ScheduleHelper
-  def self.get_schedule(technician = Technician)
+  def self.get_work_orders(technician = Technician)
     WorkOrder.where(technician_id: technician.id).order(time: :asc).map { |workOrder| {
       "time" => workOrder.time,
       "timeInMinutes" => (workOrder.time.hour * 60 + workOrder.time.min),
@@ -9,8 +9,8 @@ module ScheduleHelper
       "price" => workOrder.price
     }}
   end
-  def self.get_breaks(technician = Technician)
-    work_orders = get_schedule technician
+  def self.get_schedule_for_technician(technician = Technician)
+    work_orders = get_work_orders technician
     # puts work_orders
     breaks = []
     if work_orders.length > 0 then
@@ -43,6 +43,13 @@ module ScheduleHelper
         } ]
       end
     end
-    breaks
+    {
+      "technician" => technician,
+      "work_orders" => work_orders,
+      "breaks" => breaks
+    }
+  end
+  def self.get_schedule
+    Technician.all.map { |technician| get_schedule_for_technician technician }
   end
 end
