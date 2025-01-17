@@ -21,7 +21,11 @@
                 </div>
             <% end %>
             <% schedule["breaks"].each do |break_slot| %>
-                <div class="break" style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= break_slot["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= break_slot["duration"] %>;">
+                <div
+                    onClick="alert('Time available for <%= schedule['technician'].name %>: <%= "#{break_slot['duration'] / 60} hours and #{break_slot['duration'] % 60} minutes" %>')"
+                    class="break"
+                    style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= break_slot["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= break_slot["duration"] %>;"
+                >
                 </div>
             <% end %>
         <% end %>
