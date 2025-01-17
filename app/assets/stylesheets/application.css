@@ -8,3 +8,24 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 40px 2px;
+    grid-auto-columns: 200px;
+    grid-auto-rows: 2px;
+    gap: 0 5px;
+}
+
+.work-order {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 10px;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.break {
+    border: 1px dotted red;
+}
