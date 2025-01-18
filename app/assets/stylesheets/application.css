@@ -11,21 +11,31 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: 40px 2px;
-    grid-auto-columns: 200px;
+    grid-template-columns: 60px;
+    gap: 0 20px;
+}
+
+.grid-column {
+    display: grid;
     grid-auto-rows: 2px;
+    border: 2px solid black;
     gap: 0 5px;
+    padding: 5px;
 }
 
 .work-order {
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
+    border: 5px solid black;
     border-radius: 10px;
     justify-content: space-evenly;
     text-align: center;
 }
 
 .break {
-    border: 1px dotted red;
+    background-color: rgba(63, 63, 63, .25);
+}
+
+.overlap {
+    background-color: rgba(63, 0, 0, 25);
 }

@@ -1,33 +1,35 @@
 <div class="container">
     <div class="grid-container">
-        <div style="grid-column: 1 / span 1; grid-row: 1 / span 10;">Time</div>
-        <div style="grid-column: 2/span 1; grid-row: 10 / span <%= (@latest_time * 60) - (@earliest_time * 60) %>; background-color: black"></div>
-        <% @earliest_time.upto(@latest_time) do |time| %>
-            <div style="grid-column: 1 / span 1; grid-row: <%= (time - @earliest_time) * 60 + 10%> / span 20">
-                <%= DateTime.new(2025, 1, 14, time, 0, 0).strftime('%H:%M') %>
-            </div>
-        <% end %>
-        <% @schedule_by_technician.each do |schedule| %>
-            <div style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: 1 / span 10;">
-                <%= schedule["technician"].name %>
-            </div>
-            <% schedule["work_orders"].each do |workOrder| %>
-                <div class="work-order" style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= workOrder["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= workOrder["duration"] %>;">
-                    <div>Location: <%= workOrder["location"] %></div>
-                    <div>City: <%= workOrder["city"] %></div>
-                    <div>Time: <%= workOrder["time"].strftime('%H:%M') %></div>
-                    <div>Duration: <%= workOrder["duration"] %> minutes</div>
-                    <div>Price: $<%= workOrder["price"] %></div>
+        <div class="grid-column" style="grid-column: 1 / span 1;">
+            <div style="grid-column: 1 / span 1; grid-row: 1 / span 20; font-size: 20px; margin: auto;">Time</div>
+            <% @earliest_time.upto(@latest_time) do |time| %>
+                <div style="grid-column: 1 / span 1; grid-row: <%= (time - @earliest_time) * 60 + 20%> / span 20">
+                    <%= DateTime.new(2025, 1, 14, time, 0, 0).strftime('%H:%M') %>
                 </div>
             <% end %>
+        </div>
+        <% @schedule_by_technician.each do |schedule| %>
+        <!--style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: 1 / span 10;"-->
+            <div class="grid-column" style="grid-column: calc(1 + <%= schedule["technician"].id %>) / span 1;">
+                <div style="grid-column: 1 / span <%= schedule["columns"]+1 %>; grid-row: 1 / span 20; text-align: center; font-size: 20px; margin: auto;">
+                    <%= schedule["technician"].name %>
+                </div>
+                <% schedule["work_orders"].each do |workOrder| %>
+                    <div class="work-order" style="grid-column: <%= workOrder["overlap"]+1 %> / span 1; grid-row: calc(20 + <%= workOrder["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= workOrder["duration"] %>;">
+                        <div><%= workOrder["location"] %> in <%= workOrder["city"] %></div>
+                        <div>Time: <%= workOrder["time"].strftime('%H:%M') %> for <%= workOrder["duration"] %> minutes</div>
+                        <div>Price: $<%= workOrder["price"] %></div>
+                    </div>
+                <% end %>
             <% schedule["breaks"].each do |break_slot| %>
                 <div
                     onClick="alert('Time available for <%= schedule['technician'].name %>: <%= "#{break_slot['duration'] / 60} hours and #{break_slot['duration'] % 60} minutes" %>')"
                     class="break"
-                    style="grid-column: calc(2 + <%= schedule["technician"].id %>) / span 1; grid-row: calc(10 + <%= break_slot["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= break_slot["duration"] %>;"
+                    style="grid-column: 1 / span <%= schedule["columns"]+1 %>; grid-row: calc(20 + <%= break_slot["timeInMinutes"] - (@earliest_time * 60) %>) / span <%= break_slot["duration"] %>;"
                 >
                 </div>
             <% end %>
+            </div>
         <% end %>
     </div>
 </div>

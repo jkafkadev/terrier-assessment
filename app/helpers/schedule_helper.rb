@@ -12,15 +12,47 @@ module ScheduleHelper
       latest_time.hour
     end
   end
+  def self.get_overlap(work_order_1, work_order_2)
+    if work_order_1["timeInMinutes"] > work_order_2["timeInMinutes"] && work_order_1["timeInMinutes"] < (work_order_2["timeInMinutes"] + work_order_2["duration"]) then
+      work_order_2["overlap"] + 1
+    else
+      0
+    end
+  end
   def self.get_work_orders(technician = Technician)
-    WorkOrder.where(technician_id: technician.id).order(time: :asc).map { |workOrder| {
-      "time" => workOrder.time,
-      "timeInMinutes" => (workOrder.time.hour * 60 + workOrder.time.min),
-      "location" => Location.find(workOrder.location_id).name,
-      "city" => Location.find(workOrder.location_id).city,
-      "duration" => workOrder.duration,
-      "price" => workOrder.price
-    }}
+    base_work_orders = WorkOrder.where(technician_id: technician.id).order(time: :asc).map { |workOrder|
+      location = Location.find(workOrder.location_id)
+      {
+        "time" => workOrder.time,
+        "timeInMinutes" => (workOrder.time.hour * 60 + workOrder.time.min),
+        "location" => location.name,
+        "city" => location.city,
+        "duration" => workOrder.duration,
+        "price" => workOrder.price
+      }
+    }
+    work_orders = [ {
+      "time" => base_work_orders[0]["time"],
+      "timeInMinutes" => base_work_orders[0]["timeInMinutes"],
+      "location" => base_work_orders[0]["location"],
+      "city" => base_work_orders[0]["city"],
+      "duration" => base_work_orders[0]["duration"],
+      "price" => base_work_orders[0]["price"],
+      "overlap" => 0
+    } ]
+    (1..(base_work_orders.length - 1)).each { |i|
+      work_order = base_work_orders[i]
+      work_orders += [ {
+        "time" => work_order["time"],
+        "timeInMinutes" => work_order["timeInMinutes"],
+        "location" => work_order["location"],
+        "city" => work_order["city"],
+        "duration" => work_order["duration"],
+        "price" => work_order["price"],
+        "overlap" => get_overlap(work_order, work_orders[i-1])
+      } ]
+    }
+    work_orders
   end
   def self.get_schedule_for_technician(technician = Technician)
     work_orders = get_work_orders technician
@@ -62,6 +94,7 @@ module ScheduleHelper
     end
     {
       "technician" => technician,
+      "columns" => (work_orders.max_by { |work_order| work_order["overlap"] })["overlap"],
       "work_orders" => work_orders,
       "breaks" => breaks
     }
