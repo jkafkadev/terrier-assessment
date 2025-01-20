@@ -1,13 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  technician_id: one
-  location_id: one
+  technician_id: 1
+  location_id: 1
   time: 2025-01-14 13:31:43
+  duration: 60
   price: 1
 
 two:
-  technician_id: two
-  location_id: two
+  technician_id: 2
+  location_id: 2
   time: 2025-01-14 13:31:43
+  duration: 60
   price: 1
